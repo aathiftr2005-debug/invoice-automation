@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: invoice-automation-backend
+    runtime: docker
+    rootDir: backend
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: ANTHROPIC_MODEL
+        value: claude-sonnet-4-20250514
+      - key: FRONTEND_URL
+        sync: false
+      - key: MAX_CONTENT_LENGTH
+        value: 10485760
+      - key: REQUEST_TIMEOUT
+        value: 60
