@@ -24,7 +24,7 @@ class Config:
 
 
 def validate_config() -> None:
-    missing = [key for key in ("DATABASE_URL", "ANTHROPIC_API_KEY") if not os.getenv(key)]
+    missing = [key for key in ("DATABASE_URL", "GEMINI_API_KEY") if not os.getenv(key)]
     if missing:
         joined = ", ".join(missing)
         raise RuntimeError(f"Missing required environment variable(s): {joined}")
