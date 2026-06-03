@@ -93,31 +93,19 @@ def parse_claude_json(raw_text: str) -> dict:
         except json.JSONDecodeError as error:
             raise ValueError("AI response JSON could not be parsed.") from error
 
-
 def extract_with_claude(invoice_text: str) -> dict:
-    headers = {
-        "x-api-key": current_app.config["ANTHROPIC_API_KEY"],
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json",
-    }
+    api_key = current_app.config.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
     payload = {
-        "model": current_app.config["ANTHROPIC_MODEL"],
-        "max_tokens": 1800,
-        "temperature": 0,
-        "messages": [{"role": "user", "content": build_claude_prompt(invoice_text)}],
+        "contents": [{"parts": [{"text": build_claude_prompt(invoice_text)}]}],
+        "generationConfig": {"temperature": 0, "maxOutputTokens": 1800},
     }
-    response = requests.post(
-        "https://api.anthropic.com/v1/messages",
-        headers=headers,
-        json=payload,
-        timeout=current_app.config["REQUEST_TIMEOUT"],
-    )
+    response = requests.post(url, json=payload, timeout=current_app.config["REQUEST_TIMEOUT"])
     response.raise_for_status()
-    content = response.json().get("content", [])
-    text_blocks = [part.get("text", "") for part in content if part.get("type") == "text"]
-    return normalize_invoice_payload(parse_claude_json("\n".join(text_blocks)))
+    raw_text = response.json()["candidates"][0]["content"]["parts"][0]["text"]
+    return normalize_invoice_payload(parse_claude_json(raw_text))
 
-
+    
 def parse_invoice_date(value):
     if not value:
         return None
