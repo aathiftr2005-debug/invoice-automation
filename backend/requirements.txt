@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+python-dotenv
+pydantic
+pydantic[email]
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+reportlab
+google-generativeai
+pillow
+pandas
