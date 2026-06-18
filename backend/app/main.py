@@ -34,3 +34,7 @@ def root():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+from app.ai_routes import router as ai_router
+app.include_router(ai_router)
+from app.routes.pdf import router as pdf_router
+app.include_router(pdf_router)
