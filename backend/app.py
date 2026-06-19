@@ -17,7 +17,10 @@ def create_app() -> Flask:
 
     CORS(
         app,
-        resources={r"/api/*": {"origins": [app.config["FRONTEND_URL"]]}},
+        resources=r"/*",
+        origins=["https://frontend-ten-steel-74.vercel.app", "http://localhost:5173", "http://localhost:3000"],
+        allow_headers=["Content-Type", "Authorization"],
+        methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         supports_credentials=False,
     )
     db.init_app(app)
