@@ -23,6 +23,10 @@ def create_app() -> Flask:
     db.init_app(app)
     app.register_blueprint(api, url_prefix="/api")
 
+    @app.get("/")
+    def index():
+        return jsonify({"message": "Invoice Automation API is live!", "status": "ok"})
+
     @app.get("/health")
     def health_check():
         return jsonify({"status": "ok"})
@@ -47,3 +51,4 @@ app = create_app()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", "5000")))
+
