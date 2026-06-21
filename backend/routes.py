@@ -8,6 +8,7 @@ from pathlib import Path
 from uuid import uuid4
 
 import pdfplumber
+import google.generativeai as genai
 import requests
 from flask import Blueprint, Response, current_app, jsonify, request
 from sqlalchemy import desc, extract, func
@@ -20,6 +21,25 @@ from pdf_gen import generate_invoice_pdf
 api = Blueprint("api", __name__)
 
 ALLOWED_EXTENSIONS = {"pdf"}
+
+CHAT_INVOICE_SYSTEM_PROMPT = """
+You are a strict invoice JSON extraction engine.
+Return ONLY a valid JSON object. Do not include markdown, code fences, comments, or conversational text.
+The JSON object must match this exact schema:
+{
+  "client_name": string,
+  "description": string,
+  "amount": float,
+  "tax_rate": float
+}
+Rules:
+- Infer reasonable values from the user's natural language invoice request.
+- If client_name is missing, use "Unknown Client".
+- If description is missing, use "Invoice services".
+- If amount is missing or unclear, use 0.0.
+- If tax_rate is missing or unclear, use 0.0.
+- amount and tax_rate must be numbers, not strings.
+""".strip()
 
 
 def is_allowed_pdf(filename: str) -> bool:
@@ -93,6 +113,33 @@ def parse_claude_json(raw_text: str) -> dict:
             return json.loads(cleaned[start : end + 1])
         except json.JSONDecodeError as error:
             raise ValueError("AI response JSON could not be parsed.") from error
+
+
+def normalize_chat_invoice_payload(payload: dict) -> dict:
+    return {
+        "client_name": str(payload.get("client_name") or "Unknown Client"),
+        "description": str(payload.get("description") or "Invoice services"),
+        "amount": float(decimal_or_zero(payload.get("amount"))),
+        "tax_rate": float(decimal_or_zero(payload.get("tax_rate"))),
+    }
+
+
+def extract_chat_invoice_details(user_text: str) -> dict:
+    api_key = current_app.config.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        raise ValueError("GEMINI_API_KEY is not configured.")
+
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel(
+        "gemini-1.5-flash",
+        system_instruction=CHAT_INVOICE_SYSTEM_PROMPT,
+    )
+    response = model.generate_content(
+        user_text,
+        generation_config={"temperature": 0, "max_output_tokens": 512},
+    )
+    return normalize_chat_invoice_payload(parse_claude_json(response.text))
+
 
 def extract_with_claude(invoice_text: str) -> dict:
     api_key = current_app.config.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")
@@ -191,6 +238,22 @@ def upload_invoice():
     finally:
         if file_path and os.path.exists(file_path):
             os.remove(file_path)
+
+
+@api.post("/chat-invoice")
+def chat_invoice():
+    payload = request.get_json(silent=True) or {}
+    user_text = str(payload.get("text") or payload.get("message") or payload.get("prompt") or "").strip()
+    if not user_text:
+        return jsonify({"error": "Text input is required."}), 400
+
+    try:
+        invoice_details = extract_chat_invoice_details(user_text)
+        return jsonify(invoice_details), 200
+    except ValueError as error:
+        return jsonify({"error": str(error)}), 400
+    except Exception:
+        return jsonify({"error": "AI invoice parsing failed. Please try again."}), 502
 
 
 @api.get("/invoices")

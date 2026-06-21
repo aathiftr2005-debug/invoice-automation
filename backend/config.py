@@ -28,6 +28,7 @@ class Config:
     MAX_CONTENT_LENGTH = int(os.getenv("MAX_CONTENT_LENGTH", 10 * 1024 * 1024))
     UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", "/tmp/invoice-uploads")
     FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
     ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
     ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-20250514")
     REQUEST_TIMEOUT = int(os.getenv("REQUEST_TIMEOUT", "60"))
