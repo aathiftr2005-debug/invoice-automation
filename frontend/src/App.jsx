@@ -1,5 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import AIChatComponent from "./components/AIChatComponent.jsx";
+import InvoiceDashboard from "./components/InvoiceDashboard.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import Analytics from "./pages/Analytics.jsx";
 import InvoiceDetail from "./pages/InvoiceDetail.jsx";
@@ -25,8 +27,8 @@ export default function App() {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen overflow-hidden bg-navy text-softWhite">
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.22),transparent_32%),linear-gradient(180deg,#0F172A_0%,#111827_100%)]" />
+    <div className="min-h-screen overflow-hidden bg-cleanWhite text-deepBlack">
+      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(180deg,#FFFFFF_0%,#FFF7D1_48%,#FFFFFF_100%)]" />
       <div className="relative flex min-h-screen flex-col md:flex-row">
         <Sidebar />
         <AnimatePresence mode="wait">
@@ -36,6 +38,7 @@ export default function App() {
             <Route path="/invoices" element={<Page><Invoices /></Page>} />
             <Route path="/invoices/:id" element={<Page><InvoiceDetail /></Page>} />
             <Route path="/analytics" element={<Page><Analytics /></Page>} />
+            <Route path="/chat" element={<Page><AIChatComponent /><InvoiceDashboard /></Page>} />
           </Routes>
         </AnimatePresence>
       </div>

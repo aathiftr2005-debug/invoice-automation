@@ -1,9 +1,14 @@
+import os
 from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import JSON as GenericJSON
 from sqlalchemy.dialects.postgresql import JSONB
 
 db = SQLAlchemy()
+
+# Use JSONB on PostgreSQL, generic JSON on SQLite fallback
+JSONType = JSONB if os.environ.get("DATABASE_URL", "").startswith("postgres") else GenericJSON
 
 
 class Invoice(db.Model):
@@ -15,7 +20,7 @@ class Invoice(db.Model):
     invoice_date = db.Column(db.Date, nullable=True)
     total_amount = db.Column(db.Numeric(12, 2), nullable=True)
     currency = db.Column(db.String(10), nullable=False, default="EUR")
-    line_items = db.Column(JSONB, nullable=False, default=list)
+    line_items = db.Column(JSONType, nullable=False, default=list)
     file_name = db.Column(db.String(255), nullable=True)
     uploaded_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 

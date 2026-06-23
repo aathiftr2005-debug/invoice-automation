@@ -17,13 +17,26 @@ def database_url() -> str | None:
     return url
 
 
+def build_safe_database_uri() -> str:
+    primary = database_url()
+    if not primary:
+        return "sqlite:///dev_fallback.db"
+    return primary
+
+
 class Config:
-    SQLALCHEMY_DATABASE_URI = database_url()
+    SQLALCHEMY_DATABASE_URI = build_safe_database_uri()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_size": 5,
+        "max_overflow": 2,
+        "pool_timeout": 30,
+        "pool_recycle": 1800,
         "pool_pre_ping": True,
-        "pool_recycle": 300,
-        "connect_args": {"connect_timeout": 10},
+        "connect_args": {
+            "connect_timeout": 10,
+            "sslmode": "require",
+        },
     }
     MAX_CONTENT_LENGTH = int(os.getenv("MAX_CONTENT_LENGTH", 10 * 1024 * 1024))
     UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", "/tmp/invoice-uploads")

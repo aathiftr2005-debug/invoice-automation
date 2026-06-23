@@ -16,9 +16,6 @@ def create_app() -> Flask:
     validate_config()
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
-    # Enable CORS globally across all API endpoints paths utilizing flask_cors mapping
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
-    
     db.init_app(app)
     app.register_blueprint(api, url_prefix="/api")
 
@@ -34,15 +31,13 @@ def create_app() -> Flask:
     def commit_invoice():
         try:
             data = request.get_json() or {}
-            client = data.get('client', '—')
-            description = data.get('description', '—')
-            subtotal = data.get('subtotal', '—')
-            tax = data.get('tax', '—')
-            total = data.get('total', '—')
+            client = data.get('client', '\u2014')
+            description = data.get('description', '\u2014')
+            subtotal = data.get('subtotal', '\u2014')
+            tax = data.get('tax', '\u2014')
+            total = data.get('total', '\u2014')
             frequency = data.get('frequency', 'One-time')
 
-            # Beautifully formatted transaction panel schema logging to sys.stderr
-            # ASCII characters only to prevent UnicodeEncodeError on Windows
             print("\n==================================================", file=sys.stderr)
             print(" [aathifproject2026] AGENT LEDGER TRANSACTION LOG", file=sys.stderr)
             print("==================================================", file=sys.stderr)
@@ -74,6 +69,10 @@ def create_app() -> Flask:
     @app.errorhandler(500)
     def server_error(_error):
         return jsonify({"error": "An unexpected server error occurred."}), 500
+
+    # Apply CORS last, after all routes and blueprints are registered,
+    # so every route inherits the cross-origin policy.
+    CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
     return app
 

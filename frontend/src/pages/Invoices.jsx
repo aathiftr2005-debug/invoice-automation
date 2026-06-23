@@ -68,22 +68,22 @@ export default function Invoices() {
     <div className="mx-auto max-w-7xl">
       <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-indigo-300">Invoices</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-mangoDeep">Invoices</p>
           <h2 className="mt-2 text-3xl font-bold md:text-5xl">Invoice ledger</h2>
         </div>
-        <button className="inline-flex items-center justify-center gap-2 rounded-md bg-indigoElectric px-4 py-3 text-sm font-bold text-white shadow-glow hover:bg-indigo-500" onClick={exportCsv}>
+        <button className="inline-flex items-center justify-center gap-2 rounded-md bg-mango px-4 py-3 text-sm font-bold text-deepBlack shadow-glow hover:bg-mangoDeep" onClick={exportCsv}>
           <Download size={18} />
           Export CSV
         </button>
       </div>
 
       <div className="glass-card mb-5 grid gap-3 rounded-lg p-4 md:grid-cols-[1fr_auto_auto]">
-        <label className="flex items-center gap-3 rounded-md border border-white/10 bg-white/[0.04] px-3 py-2">
-          <Search size={18} className="text-slate-400" />
-          <input className="w-full bg-transparent text-sm outline-none placeholder:text-slate-500" placeholder="Search vendor" value={search} onChange={(event) => setSearch(event.target.value)} />
+        <label className="flex items-center gap-3 rounded-md border border-deepBlack/10 bg-cleanWhite px-3 py-2">
+          <Search size={18} className="text-deepBlack/45" />
+          <input className="w-full bg-transparent text-sm outline-none placeholder:text-deepBlack/40" placeholder="Search vendor" value={search} onChange={(event) => setSearch(event.target.value)} />
         </label>
-        <input className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-sm outline-none" type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} />
-        <input className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-sm outline-none" type="date" value={endDate} onChange={(event) => setEndDate(event.target.value)} />
+        <input className="rounded-md border border-deepBlack/10 bg-cleanWhite px-3 py-2 text-sm outline-none" type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} />
+        <input className="rounded-md border border-deepBlack/10 bg-cleanWhite px-3 py-2 text-sm outline-none" type="date" value={endDate} onChange={(event) => setEndDate(event.target.value)} />
       </div>
 
       <div className="glass-card overflow-hidden rounded-lg p-2">
@@ -94,7 +94,7 @@ export default function Invoices() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[760px] text-left text-sm">
-              <thead className="text-xs uppercase tracking-[0.16em] text-slate-400">
+              <thead className="text-xs uppercase tracking-[0.16em] text-deepBlack/55">
                 <tr>
                   <th className="px-4 py-4">Vendor</th>
                   <th className="px-4 py-4">Invoice No</th>
@@ -108,17 +108,17 @@ export default function Invoices() {
                 {invoices.map((invoice, index) => (
                   <motion.tr
                     key={invoice.id}
-                    className="cursor-pointer border-t border-white/[0.08] transition hover:bg-white/[0.04]"
+                    className="cursor-pointer border-t border-deepBlack/10 transition hover:bg-mango/10"
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.04 }}
                     onClick={() => navigate(`/invoices/${invoice.id}`)}
                   >
                     <td className="px-4 py-4 font-semibold">{invoice.vendor_name || "Unknown"}</td>
-                    <td className="px-4 py-4 text-slate-300">{invoice.invoice_number || "Unknown"}</td>
-                    <td className="px-4 py-4 text-slate-300">{invoice.invoice_date || "Unknown"}</td>
+                    <td className="px-4 py-4 text-deepBlack/70">{invoice.invoice_number || "Unknown"}</td>
+                    <td className="px-4 py-4 text-deepBlack/70">{invoice.invoice_date || "Unknown"}</td>
                     <td className="px-4 py-4 font-bold">{Number(invoice.total_amount).toFixed(2)}</td>
-                    <td className="px-4 py-4 text-slate-300">{invoice.currency}</td>
+                    <td className="px-4 py-4 text-deepBlack/70">{invoice.currency}</td>
                     <td className="px-4 py-4 text-right">
                       <button
                         aria-label="Delete invoice"
@@ -135,7 +135,7 @@ export default function Invoices() {
                 ))}
               </tbody>
             </table>
-            {!invoices.length && <p className="p-8 text-center text-slate-400">No invoices found.</p>}
+            {!invoices.length && <p className="p-8 text-center text-deepBlack/55">No invoices found.</p>}
           </div>
         )}
       </div>

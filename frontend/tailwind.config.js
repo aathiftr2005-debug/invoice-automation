@@ -3,15 +3,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        navy: "#0F172A",
-        indigoElectric: "#6366F1",
-        softWhite: "#F8FAFC"
+        mango: "#FFC300",
+        mangoGold: "#FFC72C",
+        mangoDeep: "#FFB000",
+        deepBlack: "#111111",
+        cleanWhite: "#FFFFFF"
       },
       fontFamily: {
         inter: ["Inter", "sans-serif"]
       },
       boxShadow: {
-        glow: "0 0 40px rgba(99, 102, 241, 0.24)"
+        glow: "0 16px 42px rgba(255, 195, 0, 0.24)",
+        mangoGlow: "0 0 32px rgba(255, 199, 44, 0.35)"
       }
     }
   },

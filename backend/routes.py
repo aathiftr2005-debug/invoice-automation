@@ -131,7 +131,7 @@ def extract_chat_invoice_details(user_text: str) -> dict:
 
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel(
-        "gemini-1.5-flash",
+        "gemini-2.0-flash",
         system_instruction=CHAT_INVOICE_SYSTEM_PROMPT,
     )
     response = model.generate_content(
@@ -143,7 +143,7 @@ def extract_chat_invoice_details(user_text: str) -> dict:
 
 def extract_with_claude(invoice_text: str) -> dict:
     api_key = current_app.config.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
     payload = {
         "contents": [{"parts": [{"text": build_claude_prompt(invoice_text)}]}],
         "generationConfig": {"temperature": 0, "maxOutputTokens": 1800},
@@ -256,33 +256,25 @@ def chat_invoice():
         return jsonify({"error": "AI invoice parsing failed. Please try again."}), 502
 
 
-@api.get("/invoices")
-def list_invoices():
-    page = max(request.args.get("page", 1, type=int), 1)
-    per_page = min(max(request.args.get("per_page", 10, type=int), 1), 100)
-    search = request.args.get("search", "").strip()
-    start_date = request.args.get("start_date")
-    end_date = request.args.get("end_date")
-
-    query = Invoice.query
-    if search:
-        query = query.filter(Invoice.vendor_name.ilike(f"%{search}%"))
-    parsed_start_date = parse_invoice_date(start_date)
-    parsed_end_date = parse_invoice_date(end_date)
-    if parsed_start_date:
-        query = query.filter(Invoice.invoice_date >= parsed_start_date)
-    if parsed_end_date:
-        query = query.filter(Invoice.invoice_date <= parsed_end_date)
-
-    result = query.order_by(desc(Invoice.uploaded_at)).paginate(page=page, per_page=per_page, error_out=False)
-    return jsonify(
-        {
-            "items": [invoice.to_dict() for invoice in result.items],
-            "page": result.page,
-            "pages": result.pages,
-            "total": result.total,
-        }
-    )
+@api.route('/invoices', methods=['GET'])
+def get_all_invoices():
+    try:
+        invoices = Invoice.query.all()
+        parsed_items = []
+        for inv in invoices:
+            parsed_items.append({
+                "vendor_name": str(inv.vendor_name) if inv.vendor_name else "Unknown",
+                "invoice_number": str(inv.invoice_number) if inv.invoice_number else "N/A",
+                "total_amount": float(inv.total_amount) if inv.total_amount else 0.0,
+                "currency": str(inv.currency) if inv.currency else "USD",
+                "uploaded_at": inv.uploaded_at.strftime('%Y-%m-%d %H:%M:%S') if hasattr(inv, 'uploaded_at') and inv.uploaded_at else ""
+            })
+        return jsonify({"success": True, "items": parsed_items}), 200
+    except Exception as e:
+        import traceback
+        print("CRITICAL ENDPOINT CRASH:")
+        traceback.print_exc()
+        return jsonify({"success": False, "error": str(e), "items": []}), 500
 
 
 @api.get("/invoices/<int:invoice_id>/pdf")

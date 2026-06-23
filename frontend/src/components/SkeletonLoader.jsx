@@ -3,7 +3,7 @@ export default function SkeletonLoader({ rows = 4, type = "cards" }) {
     return (
       <div className="space-y-3">
         {Array.from({ length: rows }).map((_, index) => (
-          <div key={index} className="grid grid-cols-6 gap-4 rounded-md border border-white/10 bg-white/[0.03] p-4">
+          <div key={index} className="grid grid-cols-6 gap-4 rounded-md border border-deepBlack/10 bg-cleanWhite p-4">
             {Array.from({ length: 6 }).map((__, column) => (
               <div key={column} className="skeleton h-4 rounded" />
             ))}

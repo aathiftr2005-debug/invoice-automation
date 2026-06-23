@@ -26,8 +26,8 @@ export default function InvoiceDetail() {
     const loadInvoice = async () => {
       setIsLoading(true);
       try {
-        const response = await api.get(`/invoices/${id}`);
-        setInvoice(response.data.invoice);
+        const response = await api.get("/invoices", { params: { per_page: 100 } });
+        setInvoice(response.data.items.find((item) => String(item.id) === id) || null);
       } catch (error) {
         toast.error(error.message);
       } finally {
@@ -46,12 +46,12 @@ export default function InvoiceDetail() {
   }
 
   if (!invoice) {
-    return <p className="text-slate-300">Invoice not found.</p>;
+    return <p className="text-deepBlack/70">Invoice not found.</p>;
   }
 
   return (
     <div className="mx-auto max-w-6xl">
-      <button className="mb-6 inline-flex items-center gap-2 rounded-md border border-white/10 px-4 py-2 text-sm font-semibold text-slate-200 hover:bg-white/[0.08]" onClick={() => navigate("/invoices")}>
+      <button className="mb-6 inline-flex items-center gap-2 rounded-md border border-deepBlack/15 px-4 py-2 text-sm font-semibold text-deepBlack hover:bg-mango/20" onClick={() => navigate("/invoices")}>
         <ArrowLeft size={18} />
         Back
       </button>
@@ -59,19 +59,19 @@ export default function InvoiceDetail() {
       <motion.div className="glass-card rounded-lg p-6" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-indigo-300">{invoice.invoice_number || "Invoice"}</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-mangoDeep">{invoice.invoice_number || "Invoice"}</p>
             <h2 className="mt-2 text-3xl font-bold md:text-5xl">{invoice.vendor_name || "Unknown vendor"}</h2>
-            <p className="mt-3 text-slate-400">{invoice.invoice_date || "No invoice date"} · {invoice.file_name}</p>
+            <p className="mt-3 text-deepBlack/60">{invoice.invoice_date || "No invoice date"} · {invoice.file_name}</p>
           </div>
-          <div className="rounded-lg border border-indigo-300/25 bg-indigoElectric/12 p-5 text-right">
-            <p className="text-xs uppercase tracking-[0.18em] text-indigo-200">Total</p>
+          <div className="rounded-lg border border-mango/60 bg-mango/20 p-5 text-right">
+            <p className="text-xs uppercase tracking-[0.18em] text-deepBlack/60">Total</p>
             <p className="mt-2 text-4xl font-extrabold">{invoice.currency} <CountUp value={invoice.total_amount} /></p>
           </div>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full min-w-[680px] text-left text-sm">
-            <thead className="text-xs uppercase tracking-[0.16em] text-slate-400">
+            <thead className="text-xs uppercase tracking-[0.16em] text-deepBlack/55">
               <tr>
                 <th className="py-3">Description</th>
                 <th className="py-3">Quantity</th>
@@ -81,16 +81,16 @@ export default function InvoiceDetail() {
             </thead>
             <tbody>
               {(invoice.line_items || []).map((item, index) => (
-                <motion.tr key={`${item.description}-${index}`} className="border-t border-white/[0.08]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: index * 0.05 }}>
+                <motion.tr key={`${item.description}-${index}`} className="border-t border-deepBlack/10" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: index * 0.05 }}>
                   <td className="py-4 pr-4 font-semibold">{item.description}</td>
-                  <td className="py-4 text-slate-300">{item.quantity}</td>
-                  <td className="py-4 text-slate-300">{Number(item.unit_price).toFixed(2)}</td>
+                  <td className="py-4 text-deepBlack/70">{item.quantity}</td>
+                  <td className="py-4 text-deepBlack/70">{Number(item.unit_price).toFixed(2)}</td>
                   <td className="py-4 text-right font-bold">{Number(item.amount).toFixed(2)}</td>
                 </motion.tr>
               ))}
             </tbody>
           </table>
-          {!invoice.line_items?.length && <p className="py-10 text-center text-slate-400">No line items were extracted.</p>}
+          {!invoice.line_items?.length && <p className="py-10 text-center text-deepBlack/55">No line items were extracted.</p>}
         </div>
       </motion.div>
     </div>

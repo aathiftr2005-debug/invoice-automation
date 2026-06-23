@@ -5,7 +5,7 @@ import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer,
 import api from "../api/axios.js";
 import SkeletonLoader from "../components/SkeletonLoader.jsx";
 
-const pieColors = ["#6366F1", "#22D3EE", "#34D399", "#F59E0B", "#F472B6"];
+const pieColors = ["#FFC300", "#111111", "#FFB000", "#FFFFFF", "#8A6A00"];
 
 export default function Analytics() {
   const [analytics, setAnalytics] = useState(null);
@@ -39,7 +39,7 @@ export default function Analytics() {
   return (
     <div className="mx-auto max-w-7xl">
       <div className="mb-6">
-        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-indigo-300">Analytics</p>
+        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-mangoDeep">Analytics</p>
         <h2 className="mt-2 text-3xl font-bold md:text-5xl">Spend intelligence</h2>
       </div>
 
@@ -56,11 +56,11 @@ export default function Analytics() {
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={analytics?.monthly_totals || []}>
-                <CartesianGrid stroke="rgba(148,163,184,0.15)" vertical={false} />
-                <XAxis dataKey="month" stroke="#94A3B8" />
-                <YAxis stroke="#94A3B8" />
-                <Tooltip contentStyle={{ background: "#0F172A", border: "1px solid rgba(248,250,252,0.14)", color: "#F8FAFC" }} />
-                <Bar dataKey="total" fill="#6366F1" radius={[6, 6, 0, 0]} animationDuration={900} />
+                <CartesianGrid stroke="rgba(17,17,17,0.12)" vertical={false} />
+                <XAxis dataKey="month" stroke="#111111" />
+                <YAxis stroke="#111111" />
+                <Tooltip contentStyle={{ background: "#FFFFFF", border: "1px solid rgba(17,17,17,0.14)", color: "#111111" }} />
+                <Bar dataKey="total" fill="#FFC300" radius={[6, 6, 0, 0]} animationDuration={900} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -76,7 +76,7 @@ export default function Analytics() {
                     <Cell key={entry.vendor} fill={pieColors[index % pieColors.length]} />
                   ))}
                 </Pie>
-                <Tooltip contentStyle={{ background: "#0F172A", border: "1px solid rgba(248,250,252,0.14)", color: "#F8FAFC" }} />
+                <Tooltip contentStyle={{ background: "#FFFFFF", border: "1px solid rgba(17,17,17,0.14)", color: "#111111" }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -88,8 +88,8 @@ export default function Analytics() {
 
 function SummaryCard({ label, value, index }) {
   return (
-    <motion.div className="glass-card rounded-lg p-5 transition hover:-translate-y-1 hover:border-indigo-300/35" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.08 }}>
-      <p className="text-xs uppercase tracking-[0.18em] text-slate-400">{label}</p>
+    <motion.div className="glass-card rounded-lg p-5 transition hover:-translate-y-1 hover:border-mango/70" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.08 }}>
+      <p className="text-xs uppercase tracking-[0.18em] text-deepBlack/55">{label}</p>
       <p className="mt-3 break-words text-3xl font-extrabold">{value}</p>
     </motion.div>
   );

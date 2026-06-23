@@ -68,13 +68,13 @@ export default function Upload() {
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6">
       <div>
-        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-indigo-300">Upload</p>
+        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-mangoDeep">Upload</p>
         <h2 className="mt-2 text-3xl font-bold md:text-5xl">Process a PDF invoice</h2>
       </div>
 
       <div
         className={`glass-card grid min-h-[46vh] place-items-center rounded-lg border-2 border-dashed p-6 text-center transition ${
-          isDragging ? "dropzone-active" : "border-indigo-400/45"
+          isDragging ? "dropzone-active" : "border-mango/70"
         }`}
         onDragEnter={(event) => {
           event.preventDefault();
@@ -89,12 +89,12 @@ export default function Upload() {
         }}
       >
         <div className="max-w-xl">
-          <div className="mx-auto mb-5 grid size-16 place-items-center rounded-lg bg-indigoElectric/20 text-indigo-200">
+          <div className="mx-auto mb-5 grid size-16 place-items-center rounded-lg bg-mango text-deepBlack">
             <UploadCloud size={34} />
           </div>
           <h3 className="text-2xl font-bold">Drop your invoice here</h3>
-          <p className="mt-3 text-sm leading-6 text-slate-300">PDF only, up to 10MB. The file is validated before processing.</p>
-          <label className="mt-6 inline-flex cursor-pointer rounded-md bg-indigoElectric px-5 py-3 text-sm font-bold text-white shadow-glow transition hover:bg-indigo-500">
+          <p className="mt-3 text-sm leading-6 text-deepBlack/65">PDF only, up to 10MB. The file is validated before processing.</p>
+          <label className="mt-6 inline-flex cursor-pointer rounded-md bg-mango px-5 py-3 text-sm font-bold text-deepBlack shadow-glow transition hover:bg-mangoDeep">
             Choose PDF
             <input className="sr-only" type="file" accept="application/pdf" onChange={(event) => handleFile(event.target.files?.[0])} />
           </label>
@@ -104,13 +104,13 @@ export default function Upload() {
       {selectedFile && (
         <motion.div className="glass-card flex flex-col gap-4 rounded-lg p-5 md:flex-row md:items-center md:justify-between" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <div className="flex items-center gap-3">
-            <FileText className="text-indigo-300" />
+            <FileText className="text-mangoDeep" />
             <div>
               <p className="font-semibold">{selectedFile.name}</p>
-              <p className="text-sm text-slate-400">{formatBytes(selectedFile.size)}</p>
+              <p className="text-sm text-deepBlack/60">{formatBytes(selectedFile.size)}</p>
             </div>
           </div>
-          <button className="rounded-md bg-indigoElectric px-5 py-3 text-sm font-bold text-white transition hover:bg-indigo-500 disabled:opacity-50" disabled={!canUpload} onClick={uploadInvoice}>
+          <button className="rounded-md bg-deepBlack px-5 py-3 text-sm font-bold text-cleanWhite transition hover:bg-mango hover:text-deepBlack disabled:opacity-50" disabled={!canUpload} onClick={uploadInvoice}>
             {isProcessing ? "Processing" : "Upload and process"}
           </button>
         </motion.div>
@@ -121,8 +121,8 @@ export default function Upload() {
           <div className="space-y-4">
             {processingSteps.map((step, index) => (
               <div key={step} className="flex items-center gap-3">
-                <div className={`size-3 rounded-full ${index <= activeStep ? "bg-indigoElectric" : "bg-slate-700"}`} />
-                <p className={index <= activeStep ? "text-white" : "text-slate-500"}>{step}</p>
+                <div className={`size-3 rounded-full ${index <= activeStep ? "bg-mango" : "bg-deepBlack/20"}`} />
+                <p className={index <= activeStep ? "text-deepBlack" : "text-deepBlack/45"}>{step}</p>
               </div>
             ))}
           </div>
@@ -149,7 +149,7 @@ export default function Upload() {
       {error && (
         <div className="glass-card rounded-lg border-red-400/30 p-5">
           <p className="font-semibold text-red-200">{error}</p>
-          <button className="mt-4 inline-flex items-center gap-2 rounded-md border border-white/10 px-4 py-2 text-sm font-semibold hover:bg-white/[0.08]" onClick={uploadInvoice}>
+          <button className="mt-4 inline-flex items-center gap-2 rounded-md border border-deepBlack/15 px-4 py-2 text-sm font-semibold hover:bg-mango/20" onClick={uploadInvoice}>
             <RefreshCw size={16} />
             Retry
           </button>
@@ -161,8 +161,8 @@ export default function Upload() {
 
 function Preview({ label, value }) {
   return (
-    <div className="rounded-md border border-white/10 bg-white/[0.04] p-4">
-      <p className="text-xs uppercase tracking-[0.18em] text-slate-400">{label}</p>
+    <div className="rounded-md border border-deepBlack/10 bg-mango/10 p-4">
+      <p className="text-xs uppercase tracking-[0.18em] text-deepBlack/55">{label}</p>
       <p className="mt-2 break-words text-lg font-bold">{value}</p>
     </div>
   );
